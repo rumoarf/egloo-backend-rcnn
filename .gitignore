@@ -1,0 +1,10 @@
+
+logs/
+
+dataset/
+
+\.vscode/
+
+__pycache__/
+
+*.png
