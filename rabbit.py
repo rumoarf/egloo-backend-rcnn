@@ -11,6 +11,7 @@ connection = pika.BlockingConnection(parameters=parameters)
 
 r = redis.Redis(host='35.243.66.11', password='test')
 
+print("connection success")
 channel = connection.channel()
 
 def callback(ch, method, properties, body):
