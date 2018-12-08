@@ -1,1 +1,1 @@
-worker: rabbit.py
+worker: python rabbit.py
