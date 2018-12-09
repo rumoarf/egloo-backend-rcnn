@@ -18,7 +18,7 @@ def callback(ch, method, properties, body):
     print(properties.headers['token'])
     image = Image.open(BytesIO(body))
     image.thumbnail((480, 480), Image.ANTIALIAS)
-    r.set(properties.headers['token'], body, ex=30)
+    r.set(properties.headers['token'], body, ex=300)
 
 channel.basic_consume(callback, queue='test', no_ack=True)
 channel.start_consuming()
