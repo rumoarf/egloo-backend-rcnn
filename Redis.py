@@ -4,16 +4,19 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import pytesseract
 
+from io import BytesIO
 from PIL import Image
 
-r = redis.Redis('35.221.65.47')
+r = redis.Redis(host='35.243.66.11', password='test')
 
-im = open("test.png", 'rb')
+im = Image.open('test.png')
 # 
 # test = int.from_bytes(im.read(), byteorder='big', signed=True)
-print(im.read())
 # print(type(test))
-# r.set("test", im.read())
-# r.set("test", int.from_bytes(im.read(), byteorder='big'))
-
+# print(im.tobytes())
+imgByteArr = io.BytesIO()
+im.save(imgByteArr, format='PNG')
+r.set("test", imgByteArr.getvalue())
+test = Image.open(BytesIO(r.get("test")))
+test.show()
 # print(r.get("test"))
