@@ -21,7 +21,7 @@ parameters = pika.ConnectionParameters(host='moose.rmq.cloudamqp.com', credentia
 # connection = pika.BlockingConnection(pika.URLParameters('amqp://cwjwjjwz:wCv_GEbhj-KKrkMfQQOCTB-k71Yp3VJM@moose.rmq.cloudamqp.com/cwjwjjwz'))
 connection = pika.BlockingConnection(parameters=parameters)
 
-r = redis.Redis(host='ec2-3-208-118-12.compute-1.amazonaws.com', password='pbdf7f3407d697d96e664d50f9befb3a113b765c5afdebc85cc54aef563a3dc86')
+r = redis.Redis(host='ec2-3-208-118-12.compute-1.amazonaws.com', password='pbdf7f3407d697d96e664d50f9befb3a113b765c5afdebc85cc54aef563a3dc86', port=29769)
 
 print("connection success")
 channel = connection.channel()
