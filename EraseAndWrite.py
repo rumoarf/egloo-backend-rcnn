@@ -7,18 +7,20 @@ import translate
 import json
 
 
-def write(image, data):
-    font = ImageFont.truetype("D2Coding.ttc", 10)
+def write(image, data, color='purple'):
+    font = ImageFont.truetype("D2Coding.ttc", 20)
     original = ''.join(data['text']).strip()
+    print(data['text'])
+
     if original:
         translated = json.loads(translate.translate(original))['message']['result']['translatedText']
-        ImageDraw.Draw(image).multiline_text(text=translated, xy=(10, 10), font=font, fill=(255, 0, 255))
+        ImageDraw.Draw(image).multiline_text(text=translated, xy=(10, 10), font=font, fill=color)
         
     return image
 
 
 def erase(image, data, color='blue'):
-    imageWidth, imageHeight = image.size
+    imageWidth, imageHeight = image.size    
     for (char, left, top, width, height) in zip(data['text'], data['left'], data['top'], data['width'], data['height']):
         if char and width != imageWidth and height != imageHeight:
             ImageDraw.Draw(image).rectangle(xy=((left, top), (left + width, top + height)), outline=color, fill='white')

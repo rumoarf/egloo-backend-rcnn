@@ -16,12 +16,12 @@ import EraseAndWrite
 import Tesseract
 import translate
 
-credential = pika.PlainCredentials(username='rumo', password='tardis21')
-parameters = pika.ConnectionParameters(host='35.243.66.11', credentials=credential)
-# connection = pika.BlockingConnection(pika.URLParameters('amqp://localhost'))
+credential = pika.PlainCredentials(username='cwjwjjwz', password='wCv_GEbhj-KKrkMfQQOCTB-k71Yp3VJM')
+parameters = pika.ConnectionParameters(host='moose.rmq.cloudamqp.com', credentials=credential, virtual_host='cwjwjjwz')
+# connection = pika.BlockingConnection(pika.URLParameters('amqp://cwjwjjwz:wCv_GEbhj-KKrkMfQQOCTB-k71Yp3VJM@moose.rmq.cloudamqp.com/cwjwjjwz'))
 connection = pika.BlockingConnection(parameters=parameters)
 
-r = redis.Redis(host='35.243.66.11', password='test')
+r = redis.Redis(host='ec2-3-208-118-12.compute-1.amazonaws.com', password='pbdf7f3407d697d96e664d50f9befb3a113b765c5afdebc85cc54aef563a3dc86')
 
 print("connection success")
 channel = connection.channel()
@@ -30,6 +30,7 @@ channel = connection.channel()
 def callback(ch, method, properties, body):
     print(properties.headers['token'])
     image = Image.open(BytesIO(body))
+    image = image.convert('RGB')
     result = model.detect([numpy.asarray(image)], verbose=1)
 
     draw = ImageDraw.Draw(image)
@@ -37,14 +38,14 @@ def callback(ch, method, properties, body):
     for box in result[0]['rois'].copy():
         box[0], box[1] = box[1], box[0]
         box[2], box[3] = box[3], box[2]
-        draw.rectangle(((box[0], box[1]), (box[2], box[3])), outline='red', width=7)
-        data = Tesseract.ocr(image.crop((box[0], box[1], box[2], box[3])))
-        balloon = EraseAndWrite.erase(image=image.crop((box[0], box[1], box[2], box[3])), data=data)
-        EraseAndWrite.write(image=balloon, data=data)
+        # draw.rectangle(((box[0], box[1]), (box[2], box[3])), outline='red', width=7)
+        croped = image.crop((box[0], box[1], box[2], box[3]))
+        data = Tesseract.ocr(croped)
+        balloon = EraseAndWrite.erase(image=croped, data=data, color='white')
+        # EraseAndWrite.write(image=balloon, data=data)
         image.paste(balloon, (box[0], box[1]))
         
-    image.show()
-    image.thumbnail([1280, 720], Image.ANTIALIAS)
+    image.thumbnail([1440, 847], Image.ANTIALIAS)
 
     imgByteArr = BytesIO()
     image.save(imgByteArr, format='PNG')
@@ -53,7 +54,7 @@ def callback(ch, method, properties, body):
     r.set(properties.headers['token'], imgByteArr, ex=300)
 
 
-channel.basic_consume(callback, queue='test', no_ack=True)
+channel.basic_consume(queue='test', on_message_callback=callback, auto_ack=True)
 
 
 class InferenceConfig(Config.BalloonConfig):
