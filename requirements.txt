@@ -13,3 +13,8 @@ scikit-image==0.14.1
 scipy==1.1.0
 tensorflow==1.10.0
 urllib3==1.22
+cython
+keras>=2.0.8
+h5py
+imgaug
+IPython[all]
