@@ -53,7 +53,7 @@ def callback(ch, method, properties, body):
 
     r.set(properties.headers['token'], imgByteArr, ex=300)
 
-channel.basic_consume('test', callback, True)
+channel.basic_consume(callback, 'test', True)
 
 
 class InferenceConfig(Config.BalloonConfig):
